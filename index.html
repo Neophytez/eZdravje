@@ -10,6 +10,7 @@
   <script src="knjiznice/js/jquery-2.2.3.min.js"></script>
   <script src="knjiznice/js/bootstrap.min.js"></script>
   <script src="knjiznice/js/koda.js"></script>
+  <script src="knjiznice/js/morris.js"></script>
 </head>
 <body>
 
@@ -22,25 +23,314 @@
           <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
         </button>
         <!-- ZAČETEK: Ime vaše aplikacije -->
-        <a class="navbar-brand" href="index.html">{ime vaše aplikacije}</a>
+        <a class="navbar-brand" href="index.html">eZdravstveniKarton</a>
         <!-- KONEC: Ime vaše aplikacije -->
       </div>
       <div class="collapse navbar-collapse" id="menujska-vrstica">
         <ul class="nav navbar-nav">
           <li><a href="opis.html">Opis ideje</a></li>
           <li><a href="nacrt.html">Načrt informacijske rešitve</a></li>
-          <li><a href="#">Generiranje podatkov</a></li>
+          <li><a href="#" onclick="generirajPodatke(1); generirajPodatke(2); generirajPodatke(3);">Generiranje podatkov</a></li>
         </ul>
       </div>
     </div>
   </nav>
   <!-- KONEC: Menujska vrstica na vrhu spletne strani -->
-
+  <div class="" id="info1"></div>
+  <div class="" id="info2"></div>
+  <div class="" id="info3"></div>
   <!-- ZAČETEK: Vsebina aplikacije -->
-  <div class="container">
+  <div class="container panel panel-default" style="padding-top:20px">
+    <!-- Kreiraj EHR -->
     <div class="row">
-      <div class="col-lg-12 text-center">
-        <p class="lead"><strong>TO-DO</strong>: Na tem mestu implementirajte vašo aplikacijo.</p>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <p class="panel-title">Kreiraj EHR zapis za novega uporabnika</p>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <select class="form-control" id="preberiPredlogoUporabnika">
+                  <option value=""></option>
+                  <option value="Bojan,Kralj,MALE,A+,1975-02-14T02:23">Bojan Kralj</option>
+                  <option value="Tina,Hlev,FEMALE,AB-,1995-10-08T20:53">Tina Hlev</option>
+                  <option value="Miha,Jerman,MALE,A+,1990-08-02T14:48">Miha Jerman</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                <label>Ime:</label>
+                <input type="text" class="form-control" id="kreirajIme" placeholder="Janez" />
+              </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                <label>Priimek:</label>
+                <input type="text" class="form-control" id="kreirajPriimek" placeholder="Novak" />
+              </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="form-group">
+                  <label>Spol:</label>
+                  <div class="radio row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                      <label class="radio-inline"><input type="radio" name="spol" id="rMale" value="MALE">Moški</label>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                      <label class="radio-inline"><input type="radio" name="spol" id="rFemale" value="FEMALE">Ženski</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="form-group">
+                  <label>Krvna skupina:</label>
+                    <select class="form-control" id="kreirajKrvnaSkupina">
+                      <option value=""></option>
+                      <option value="0+">0+</option>
+                      <option value="A+">A+</option>
+                      <option value="B+">B+</option>
+                      <option value="0-">0-</option>
+                      <option value="A-">A-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="B-">B-</option>
+                      <option value="AB-">AB-</option>
+                      <option value="neznano">Neznano</option>
+                    </select>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                  <label>Datum in ura rojstva:</label>
+                  <input type="text" class="form-control" id="kreirajDatumRojstva" placeholder="1990-05-25T13:55" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <button type="button" class="btn btn-default btn-sm" onclick="kreirajEHR()">Kreiraj podatke uporabnika</button>
+                <span id="kreirajSporocilo"></span>
+              </div>  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Preberi EHR -->
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <p class="panel-title">Preberi EHR zapis obstoječega uporabnika</p>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <select class="form-control" id="preberiObstojeciEHR">
+                  <option value=""></option>
+                  <option value="d8b5aea1-e8ce-42d0-a599-328405361b02">Bojan Kralj</option>
+                  <option value="57c1cea8-b984-48b6-92e2-b1970708126e">Tina Hlev</option>
+                  <option value="c684eaf3-0a64-4c6d-93a8-643a5c78807b">Miha Jerman</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group has-feedback">
+                  <label>EHR ID:</label>
+                  <input type="text" class="form-control" id="preberiEHRid" placeholder="4c5073ea-a423-4d2f-8625-7e5f99a03873" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                  <label>Ime:</label>
+                  <input type="text" class="form-control" id="preberiIme" placeholder="" disabled />
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                  <label>Priimek:</label>
+                  <input type="text" class="form-control" id="preberiPriimek" placeholder="" disabled />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="form-group">
+                  <label>Spol:</label>
+                  <input type="text" class="form-control" id="preberiSpol" placeholder="" disabled />
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="form-group">
+                  <label>Krvna skupina:</label>
+                  <input type="text" class="form-control" id="preberiKrvnaSkupina" placeholder="" disabled />
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group">
+                  <label>Datum rojstva:</label>
+                  <input type="text" class="form-control" id="preberiDatumRojstva" placeholder="" disabled />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <button type="button" class="btn btn-default btn-sm" onclick="preberiEHR()">Preberi podatke uporabnika</button>
+                <span id="preberiSporocilo"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- VZ -->
+    <div class="row">
+      <!-- Vnos VZ -->
+      <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-lg-7 col-md-7 col-sm-7">
+                <p class="panel-title">Vnos vitalnih znakov</p>
+              </div>
+              <div class="col-lg-5 col-md-5 col-sm-5">
+                <select class="form-control" id="preberiObstojeciVitalniZnak">
+                  <option value=""></option>
+                  <option value="d8b5aea1-e8ce-42d0-a599-328405361b02|2016-05-01T16:25|177|76|36.6|116/70|86">Bojan Kralj</option>
+                  <option value="57c1cea8-b984-48b6-92e2-b1970708126e|2016-05-01T16:25|167|58|38.6|100/60|77">Tina Hlev</option>
+                  <option value="c684eaf3-0a64-4c6d-93a8-643a5c78807b|2016-05-01T16:25|188|94|37.6|108/55|91">Miha Jerman</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label>EHR ID:</label>
+              <input type="text" class="form-control" id="dodajVitalnoEHR" placeholder="4c5073ea-a423-4d2f-8625-7e5f99a03873" />
+            </div>
+            
+            <div class="form-group">
+              <label>Datum in ura merjenja:</label>
+              <input type="text" class="form-control" id="dodajVitalnoDatumInUra" placeholder="2014-11-21T11:40" />
+            </div>
+            <div class="form-group">
+              <label>Telesna višina:</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="dodajVitalnoTelesnaVisina" placeholder="135" />
+                <span class="input-group-addon">cm</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Telesna teža:</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="dodajVitalnoTelesnaTeza" placeholder="40" />
+                <span class="input-group-addon">kg</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Telesna temperatura:</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="dodajVitalnoTelesnaTemperatura" placeholder="36.8" />
+                <span class="input-group-addon">°C</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Krvni tlak:</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="dodajVitalnoKrvniTlak" placeholder="140/85" />
+                <span class="input-group-addon">mm[Hg]</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Srčni utrip:</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="dodajVitalnoSrcniUtrip" placeholder="75" />
+                <span class="input-group-addon">/min</span>
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+              <button type="button" class="btn btn-default btn-sm" onclick="dodajMeritveVitalnihZnakov()">Dodaj meritve vitalnih znakov</button>
+              <span id="dodajMeritveVitalnihZnakovSporocilo"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Preberi VZ -->
+      <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-lg-7 col-md-7 col-sm-7">
+                <h3 class="panel-title">Preberi vitalne znake</h3>
+              </div>
+              <div class="col-lg-5 col-md-5 col-sm-5">
+                <h3 class="panel-title">
+                  <select class="form-control" id="preberiEhrIdZaVitalneZnake">
+                  <option value=""></option>
+                  <option value="d8b5aea1-e8ce-42d0-a599-328405361b02">Bojan Kralj</option>
+                  <option value="57c1cea8-b984-48b6-92e2-b1970708126e">Tina Hlev</option>
+                  <option value="c684eaf3-0a64-4c6d-93a8-643a5c78807b">Miha Jerman</option>
+                  </select>
+                </h3>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label>EHR ID:</label>
+              <input type="text" class="form-control" id="meritveVitalnihZnakovEHRid" placeholder="7b661e12-3a98-21ad-c29e-2dc9f5a3d885" />
+            </div>
+            <div class="form-group">
+              <label>Meritve:</label>
+              <select class="form-control" id="preberiTipZaVitalneZnake">
+                <option value="telesnaVisina">telesna višina</option>
+                <option value="telesnaTeza">telesna teža</option>
+                <option value="telesnaTemperatura">telesna temperatura</option>
+                <option value="krvniTlak">krvni tlak</option>
+                <option value="srcniUtrip">srčni utrip</option>
+              </select>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+              <button type="button" class="btn btn-default btn-sm" onclick="preberiMeritveVitalnihZnakov()">Preberi meritve vitalnih znakov</button>
+              <span id="preberiMeritveVitalnihZnakovSporocilo"></span>
+            </div>
+            <div id="rezultatMeritveVitalnihZnakov"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <p class="panel-title">Vaša trenutna lokacija</p>
+          </div>
+          <div class="panel-body">
+            <div id="mapholder"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <p class="panel-title">Graf telesne temperature</p>
+          </div>
+          <div class="panel-body">
+            <div id="body-temperature" style="width: 100%; height: 220px;"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
